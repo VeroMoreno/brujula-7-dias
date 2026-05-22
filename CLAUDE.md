@@ -27,15 +27,15 @@ Es un mini-producto autocontenido, pensado como **semilla de "Brújula" completa
 
 | Capa | Tecnología |
 |---|---|
-| Runtime | Node.js 24+ |
+| Runtime | Node.js 22+ (LTS) |
 | Backend | Express |
 | Frontend | HTML + Vanilla JS + Alpine.js |
 | Storage | Archivos `.md` planos (`gray-matter` para frontmatter) |
 | IA local | Ollama + modelo `llama3.2:3b` |
 | IA cloud (opcional) | `@anthropic-ai/sdk` (Claude Haiku 4.5) |
-| Tests | `node --test` nativo (Node 24+) |
+| Tests | `node --test` nativo (Node 22+) |
 
-**No usamos** (deliberadamente): React, Vue, Tailwind, MongoDB, build tools, Docker, dotenv (Node 24 trae `--env-file`).
+**No usamos** (deliberadamente): React, Vue, Tailwind, MongoDB, build tools, Docker, dotenv (Node 22 ya trae `--env-file`).
 
 ## Estructura del repo (irá creciendo)
 
@@ -58,18 +58,18 @@ El proyecto se trabaja en **mini-sesiones de ~30 min**, ~5h/semana variables, pl
 
 ### Convenciones
 
-- **Lenguaje**: código y nombres en inglés, copys de UI y commits en español.
+- **Lenguaje**: código, nombres y commits en inglés; copys de UI en español.
 - **Commits**: formato `tipo: descripción corta` (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`).
 - **Branch principal**: `main`. Sin GitFlow ni ramas de feature por ahora — desarrollo trunk-based, mini-sesiones tan cortas que no lo necesitan.
 - **Gestión git**: GitHub Desktop (autenticación ya configurada en Windows). En Mac, configurar `git config --global core.autocrlf input`.
-- **Estilo**: tabular o 2 espacios consistentemente (decidir en sesión 1.2 cuando empiece el código).
+- **Estilo**: 2 espacios de indentación (decidido en sesión 1.2). ES Modules (`type: module`).
 - **Tests**: pequeños y rápidos, con `node --test`. Sesiones cortas → tests que corren en <1s.
 
 ### Progreso
 
 - ✅ **1.1 Bootstrap** — `.gitignore`, `README.md`, `LICENSE`, repo publicado en GitHub.
-- ⏭️ **1.2 Express "hola mundo"** — `npm init`, instalar Express, servidor mínimo en `localhost:3000` sirviendo HTML estático.
-- 1.3 — Módulo `markdown.js` (read/write entries).
+- ✅ **1.2 Express "hola mundo"** — `package.json` (ESM, Express 5), `server/index.js` sirviendo `/web` estático, puerto vía `PORT` (default 3000), `web/index.html`.
+- ⏭️ **1.3** — Módulo `markdown.js` (read/write entries).
 - 1.4 — Endpoint `POST /api/entries`.
 - 1.5 — Endpoint `GET /api/entries`.
 - 1.6 — Tests del módulo markdown.

@@ -1,0 +1,17 @@
+{
+  "name": "brujula-7-dias",
+  "version": "0.1.0",
+  "description": "Compañero local-first para acompañar 7 días de una transición profesional o vital.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
