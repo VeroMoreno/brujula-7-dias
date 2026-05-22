@@ -1,0 +1,30 @@
+# Dependencias
+node_modules/
+
+# Datos del usuario (privados por diseño)
+data/
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+
+# Logs y runtime
+*.log
+npm-debug.log*
+.npm/
+
+# Build / cache
+dist/
+build/
+.cache/
