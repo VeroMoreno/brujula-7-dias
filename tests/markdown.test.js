@@ -72,3 +72,8 @@ test('readEntry rejects day outside 1-7', async () => {
   const dir = await tmpDir();
   await assert.rejects(() => readEntry(dir, 0), /day must be 1-7/);
 });
+
+test('readEntry returns null when the entry does not exist', async () => {
+  const dir = await tmpDir();
+  assert.equal(await readEntry(dir, 5), null);
+});
