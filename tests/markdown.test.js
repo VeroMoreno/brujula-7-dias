@@ -28,3 +28,26 @@ test('writeEntry then readEntry round-trips an entry', async () => {
   const read = await readEntry(dir, 1);
   assert.deepEqual(read, written);
 });
+
+test('editing an entry preserves created and date, bumps updated', async () => {
+  const dir = await tmpDir();
+  const first = await writeEntry(dir, {
+    day: 2,
+    question: '¿Qué evitas mirar?',
+    content: 'Primera versión.',
+  });
+
+  // Ensure the clock advances so updated differs.
+  await new Promise((r) => setTimeout(r, 10));
+
+  const edited = await writeEntry(dir, {
+    day: 2,
+    question: '¿Qué evitas mirar?',
+    content: 'Versión corregida.',
+  });
+
+  assert.equal(edited.content, 'Versión corregida.');
+  assert.equal(edited.created, first.created);
+  assert.equal(edited.date, first.date);
+  assert.notEqual(edited.updated, first.updated);
+});
