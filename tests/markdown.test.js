@@ -51,3 +51,24 @@ test('editing an entry preserves created and date, bumps updated', async () => {
   assert.equal(edited.date, first.date);
   assert.notEqual(edited.updated, first.updated);
 });
+
+test('writeEntry rejects day outside 1-7', async () => {
+  const dir = await tmpDir();
+  await assert.rejects(
+    () => writeEntry(dir, { day: 8, question: 'q', content: 'x' }),
+    /day must be 1-7/,
+  );
+});
+
+test('writeEntry rejects empty content', async () => {
+  const dir = await tmpDir();
+  await assert.rejects(
+    () => writeEntry(dir, { day: 1, question: 'q', content: '   ' }),
+    /content is required/,
+  );
+});
+
+test('readEntry rejects day outside 1-7', async () => {
+  const dir = await tmpDir();
+  await assert.rejects(() => readEntry(dir, 0), /day must be 1-7/);
+});
