@@ -77,7 +77,7 @@ export async function writeEntry(dataDir, { day, question, content }) {
   const now = new Date().toISOString();
   const existing = await readEntry(dataDir, day);
   const created = existing ? existing.created : now;
-  const date = existing ? existing.date : now.slice(0, 10);
+  const date = existing ? existing.date : new Date().toLocaleDateString('en-CA');
   const frontmatter = {
     version: SCHEMA_VERSION,
     day,
