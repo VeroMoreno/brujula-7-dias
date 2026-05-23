@@ -69,8 +69,8 @@ El proyecto se trabaja en **mini-sesiones de ~30 min**, ~5h/semana variables, pl
 
 - ✅ **1.1 Bootstrap** — `.gitignore`, `README.md`, `LICENSE`, repo publicado en GitHub.
 - ✅ **1.2 Express "hola mundo"** — `package.json` (ESM, Express 5), `server/index.js` sirviendo `/web` estático, puerto vía `PORT` (default 3000), `web/index.html`.
-- ⏭️ **1.3** — Módulo `markdown.js` (read/write entries).
-- 1.4 — Endpoint `POST /api/entries`.
+- ✅ **1.3** — Módulo `markdown.js` (`writeEntry`, `readEntry`, `listEntries`; tests en `tests/markdown.test.js`).
+- ⏭️ **1.4** — Endpoint `POST /api/entries`.
 - 1.5 — Endpoint `GET /api/entries`.
 - 1.6 — Tests del módulo markdown.
 - (Plan completo de 5 semanas detallado en el plan original, se irá actualizando aquí.)
