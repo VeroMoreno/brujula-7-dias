@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import { join } from 'node:path';
-import { writeEntry, readEntry } from '../server/lib/markdown.js';
+import { writeEntry, readEntry, listEntries } from '../server/lib/markdown.js';
 
 async function tmpDir() {
   return fs.mkdtemp(join(os.tmpdir(), 'brujula-'));
@@ -76,4 +76,20 @@ test('readEntry rejects day outside 1-7', async () => {
 test('readEntry returns null when the entry does not exist', async () => {
   const dir = await tmpDir();
   assert.equal(await readEntry(dir, 5), null);
+});
+
+test('listEntries returns [] when data dir does not exist', async () => {
+  const missing = join(os.tmpdir(), 'brujula-does-not-exist-xyz');
+  assert.deepEqual(await listEntries(missing), []);
+});
+
+test('listEntries returns existing entries sorted by day', async () => {
+  const dir = await tmpDir();
+  await writeEntry(dir, { day: 3, question: 'q3', content: 'c3' });
+  await writeEntry(dir, { day: 1, question: 'q1', content: 'c1' });
+
+  const entries = await listEntries(dir);
+  assert.equal(entries.length, 2);
+  assert.deepEqual(entries.map((e) => e.day), [1, 3]);
+  assert.equal(entries[0].content, 'c1');
 });

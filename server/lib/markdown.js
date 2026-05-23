@@ -46,6 +46,28 @@ export async function readEntry(dataDir, day) {
   };
 }
 
+export async function listEntries(dataDir) {
+  let files;
+  try {
+    files = await fs.readdir(dataDir);
+  } catch (err) {
+    if (err.code === 'ENOENT') return [];
+    throw err;
+  }
+  const days = files
+    .map((file) => /^day-(\d+)\.md$/.exec(file))
+    .filter(Boolean)
+    .map((match) => Number(match[1]))
+    .filter((day) => day >= MIN_DAY && day <= MAX_DAY)
+    .sort((a, b) => a - b);
+
+  const entries = [];
+  for (const day of days) {
+    entries.push(await readEntry(dataDir, day));
+  }
+  return entries;
+}
+
 export async function writeEntry(dataDir, { day, question, content }) {
   assertDay(day);
   if (!content || !content.trim()) {
