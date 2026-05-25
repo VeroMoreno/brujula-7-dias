@@ -71,8 +71,8 @@ El proyecto se trabaja en **mini-sesiones de ~30 min**, ~5h/semana variables, pl
 - ✅ **1.2 Express "hola mundo"** — `package.json` (ESM, Express 5), `server/index.js` sirviendo `/web` estático, puerto vía `PORT` (default 3000), `web/index.html`.
 - ✅ **1.3** — Módulo `markdown.js` (`writeEntry`, `readEntry`, `listEntries`; tests en `tests/markdown.test.js`).
 - ✅ **1.4** — Endpoint `POST /api/entries`. App factory `createApp({ dataDir })` en `server/app.js`, router en `server/routes/entries.js`, tests de integración con `node --test` + `fetch` (puerto efímero, `dataDir` temporal).
-- ⏭️ **1.5** — Endpoint `GET /api/entries`.
-- 1.6 — Render mínimo en frontend (lista de entries + form).
+- ✅ **1.5** — Endpoint `GET /api/entries`. Array directo, ordenado por día asc, `[]` cuando no hay entries. Mismo router/factory; tests con `beforeEach` que limpia el `dataDir` para aislar los casos.
+- ⏭️ **1.6** — Render mínimo en frontend (lista de entries + form).
 - (Plan completo de 5 semanas detallado en el plan original, se irá actualizando aquí.)
 
 🚦 **Checkpoint formal: fin de semana 3.** Decidir seguir / pausar / pivotar **sin culpa**.

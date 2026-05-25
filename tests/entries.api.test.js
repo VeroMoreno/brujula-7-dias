@@ -1,9 +1,10 @@
-import { describe, it, before, after } from 'node:test';
+import { describe, it, before, beforeEach, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createApp } from '../server/app.js';
+import { writeEntry } from '../server/lib/markdown.js';
 
 describe('POST /api/entries', () => {
   let server;
@@ -80,5 +81,53 @@ describe('POST /api/entries', () => {
 
     assert.equal(res.status, 400);
     assert.deepEqual(await res.json(), { error: 'invalid JSON body' });
+  });
+});
+
+describe('GET /api/entries', () => {
+  let server;
+  let baseUrl;
+  let dataDir;
+
+  before(async () => {
+    dataDir = await mkdtemp(join(tmpdir(), 'brujula-api-get-'));
+    const app = createApp({ dataDir });
+    await new Promise((resolve) => {
+      server = app.listen(0, resolve);
+    });
+    const { port } = server.address();
+    baseUrl = `http://127.0.0.1:${port}`;
+  });
+
+  after(async () => {
+    await new Promise((resolve) => server.close(resolve));
+    await rm(dataDir, { recursive: true, force: true });
+  });
+
+  // Each test inspects the whole directory, so isolate them by wiping it.
+  beforeEach(async () => {
+    await rm(dataDir, { recursive: true, force: true });
+  });
+
+  it('returns 200 and an empty array when there are no entries yet', async () => {
+    const res = await fetch(`${baseUrl}/api/entries`);
+
+    assert.equal(res.status, 200);
+    assert.deepEqual(await res.json(), []);
+  });
+
+  it('returns 200 and all entries sorted by day ascending', async () => {
+    await writeEntry(dataDir, { day: 3, question: 'q3', content: 'c3' });
+    await writeEntry(dataDir, { day: 1, question: 'q1', content: 'c1' });
+    await writeEntry(dataDir, { day: 2, question: 'q2', content: 'c2' });
+
+    const res = await fetch(`${baseUrl}/api/entries`);
+
+    assert.equal(res.status, 200);
+    const entries = await res.json();
+    assert.equal(entries.length, 3);
+    assert.deepEqual(entries.map((e) => e.day), [1, 2, 3]);
+    assert.deepEqual(entries.map((e) => e.content), ['c1', 'c2', 'c3']);
+    assert.equal(entries[0].version, 1);
   });
 });
