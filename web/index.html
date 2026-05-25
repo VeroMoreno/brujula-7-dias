@@ -4,11 +4,122 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Brújula · 7 días</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 </head>
 <body>
-  <main>
-    <h1>Brújula · 7 días</h1>
-    <p>Hola mundo. El servidor está en pie.</p>
+  <main x-data="entriesApp()" x-init="load()">
+    <header>
+      <h1>Brújula · 7 días</h1>
+      <p class="lede">Una pregunta al día. Tus respuestas se guardan en tu máquina.</p>
+    </header>
+
+    <section aria-labelledby="form-title">
+      <h2 id="form-title">Guardar reflexión</h2>
+
+      <form @submit.prevent="submit()">
+        <label>
+          Día
+          <select x-model.number="form.day">
+            <template x-for="n in 7" :key="n">
+              <option :value="n" x-text="n"></option>
+            </template>
+          </select>
+        </label>
+
+        <p class="hint" x-show="existingForDay(form.day)">
+          Ya hay una entrada para el día <span x-text="form.day"></span> — la sobrescribirás.
+        </p>
+
+        <label>
+          Pregunta del día
+          <input type="text" x-model="form.question" required maxlength="200" placeholder="¿Qué transición estás atravesando?">
+        </label>
+
+        <label>
+          Tu respuesta
+          <textarea x-model="form.content" required rows="6" placeholder="Escribe sin filtrar. Esto se queda en tu disco."></textarea>
+        </label>
+
+        <button type="submit" :disabled="saving">
+          <span x-text="saving ? 'Guardando…' : 'Guardar'"></span>
+        </button>
+
+        <p class="error" role="alert" x-show="error" x-text="error"></p>
+      </form>
+    </section>
+
+    <section aria-labelledby="list-title">
+      <h2 id="list-title">Reflexiones guardadas</h2>
+
+      <p x-show="loading" class="muted">Cargando…</p>
+      <p x-show="!loading && entries.length === 0" class="muted">
+        Aún no has guardado ninguna entrada.
+      </p>
+
+      <template x-for="entry in entries" :key="entry.day">
+        <article>
+          <h3>
+            Día <span x-text="entry.day"></span>
+            <span class="muted">· <span x-text="entry.date"></span></span>
+          </h3>
+          <p class="question" x-text="entry.question"></p>
+          <p class="content" x-text="entry.content"></p>
+        </article>
+      </template>
+    </section>
   </main>
+
+  <script>
+    function entriesApp() {
+      return {
+        entries: [],
+        loading: true,
+        saving: false,
+        error: '',
+        form: { day: 1, question: '', content: '' },
+
+        async load() {
+          this.loading = true;
+          this.error = '';
+          try {
+            const res = await fetch('/api/entries');
+            if (!res.ok) throw new Error('No se pudieron cargar las entradas.');
+            this.entries = await res.json();
+          } catch (err) {
+            this.error = err.message;
+          } finally {
+            this.loading = false;
+          }
+        },
+
+        existingForDay(day) {
+          return this.entries.some((e) => e.day === day);
+        },
+
+        async submit() {
+          this.saving = true;
+          this.error = '';
+          try {
+            const res = await fetch('/api/entries', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify(this.form),
+            });
+            if (!res.ok) {
+              const payload = await res.json().catch(() => ({}));
+              throw new Error(payload.error || 'No se pudo guardar la entrada.');
+            }
+            this.form = { day: this.form.day, question: '', content: '' };
+            await this.load();
+          } catch (err) {
+            this.error = err.message;
+          } finally {
+            this.saving = false;
+          }
+        },
+      };
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,168 @@
+:root {
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --fg: #1f1f1f;
+  --muted: #6b6b6b;
+  --border: #e5e5e0;
+  --accent: #1f1f1f;
+  --error: #b91c1c;
+  --hint: #92651a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+header {
+  margin-bottom: 2.5rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.25rem;
+}
+
+.lede {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  margin: 0 0 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+section:first-of-type h2 {
+  padding-top: 0;
+  border-top: 0;
+}
+
+form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+form input,
+form select,
+form textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.55rem 0.7rem;
+  font: inherit;
+  color: var(--fg);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: border-color 0.15s ease;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+  outline: 0;
+  border-color: var(--fg);
+}
+
+form select {
+  width: auto;
+  min-width: 5rem;
+}
+
+form textarea {
+  resize: vertical;
+  min-height: 7rem;
+  font-family: inherit;
+}
+
+button {
+  font: inherit;
+  font-weight: 500;
+  padding: 0.6rem 1.25rem;
+  background: var(--accent);
+  color: white;
+  border: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hint {
+  margin: -0.5rem 0 1rem;
+  color: var(--hint);
+  font-size: 0.85rem;
+}
+
+.error {
+  margin: 0.75rem 0 0;
+  color: var(--error);
+  font-size: 0.9rem;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+article {
+  border-top: 1px solid var(--border);
+  padding: 1.25rem 0 0.5rem;
+}
+
+article:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+article h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+article h3 .muted {
+  font-weight: 400;
+}
+
+article .question {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+article .content {
+  margin: 0;
+  white-space: pre-wrap;
+}
