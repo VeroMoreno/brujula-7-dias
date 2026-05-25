@@ -1,0 +1,35 @@
+{
+  "app": {
+    "lede": "One question a day. Your answers stay on your machine."
+  },
+  "locale": {
+    "label": "Language",
+    "es": "ES",
+    "en": "EN"
+  },
+  "form": {
+    "title": "Save reflection",
+    "day": "Day",
+    "question": "Question of the day",
+    "content": "Your answer",
+    "submit": "Save",
+    "saving": "Saving…",
+    "overwrite": "There's already an entry for day {day} — you'll overwrite it.",
+    "placeholder": {
+      "question": "What transition are you going through?",
+      "content": "Write without filtering. This stays on your disk."
+    }
+  },
+  "list": {
+    "title": "Saved reflections",
+    "empty": "You haven't saved any entries yet.",
+    "loading": "Loading…"
+  },
+  "entry": {
+    "dayLabel": "Day"
+  },
+  "errors": {
+    "load": "Couldn't load entries.",
+    "save": "Couldn't save the entry."
+  }
+}

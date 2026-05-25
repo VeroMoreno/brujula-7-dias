@@ -8,18 +8,35 @@
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
 </head>
 <body>
-  <main x-data="entriesApp()" x-init="load()">
+  <main x-data="entriesApp()" x-cloak>
     <header>
-      <h1>Brújula · 7 días</h1>
-      <p class="lede">Una pregunta al día. Tus respuestas se guardan en tu máquina.</p>
+      <div class="header-row">
+        <h1>Brújula · 7 días</h1>
+        <nav class="locale-switcher" :aria-label="t('locale.label')">
+          <button
+            type="button"
+            @click="setLocale('es')"
+            :class="{ active: locale === 'es' }"
+            :aria-pressed="locale === 'es'"
+            x-text="t('locale.es')"></button>
+          <span aria-hidden="true">·</span>
+          <button
+            type="button"
+            @click="setLocale('en')"
+            :class="{ active: locale === 'en' }"
+            :aria-pressed="locale === 'en'"
+            x-text="t('locale.en')"></button>
+        </nav>
+      </div>
+      <p class="lede" x-text="t('app.lede')"></p>
     </header>
 
     <section aria-labelledby="form-title">
-      <h2 id="form-title">Guardar reflexión</h2>
+      <h2 id="form-title" x-text="t('form.title')"></h2>
 
       <form @submit.prevent="submit()">
         <label>
-          Día
+          <span x-text="t('form.day')"></span>
           <select x-model.number="form.day">
             <template x-for="n in 7" :key="n">
               <option :value="n" x-text="n"></option>
@@ -27,22 +44,29 @@
           </select>
         </label>
 
-        <p class="hint" x-show="existingForDay(form.day)">
-          Ya hay una entrada para el día <span x-text="form.day"></span> — la sobrescribirás.
-        </p>
+        <p class="hint" x-show="existingForDay(form.day)" x-text="t('form.overwrite', { day: form.day })"></p>
 
         <label>
-          Pregunta del día
-          <input type="text" x-model="form.question" required maxlength="200" placeholder="¿Qué transición estás atravesando?">
+          <span x-text="t('form.question')"></span>
+          <input
+            type="text"
+            x-model="form.question"
+            :placeholder="t('form.placeholder.question')"
+            required
+            maxlength="200">
         </label>
 
         <label>
-          Tu respuesta
-          <textarea x-model="form.content" required rows="6" placeholder="Escribe sin filtrar. Esto se queda en tu disco."></textarea>
+          <span x-text="t('form.content')"></span>
+          <textarea
+            x-model="form.content"
+            :placeholder="t('form.placeholder.content')"
+            required
+            rows="6"></textarea>
         </label>
 
         <button type="submit" :disabled="saving">
-          <span x-text="saving ? 'Guardando…' : 'Guardar'"></span>
+          <span x-text="saving ? t('form.saving') : t('form.submit')"></span>
         </button>
 
         <p class="error" role="alert" x-show="error" x-text="error"></p>
@@ -50,17 +74,16 @@
     </section>
 
     <section aria-labelledby="list-title">
-      <h2 id="list-title">Reflexiones guardadas</h2>
+      <h2 id="list-title" x-text="t('list.title')"></h2>
 
-      <p x-show="loading" class="muted">Cargando…</p>
-      <p x-show="!loading && entries.length === 0" class="muted">
-        Aún no has guardado ninguna entrada.
-      </p>
+      <p x-show="loading" class="muted" x-text="t('list.loading')"></p>
+      <p x-show="!loading && entries.length === 0" class="muted" x-text="t('list.empty')"></p>
 
       <template x-for="entry in entries" :key="entry.day">
         <article>
           <h3>
-            Día <span x-text="entry.day"></span>
+            <span x-text="t('entry.dayLabel')"></span>
+            <span x-text="entry.day"></span>
             <span class="muted">· <span x-text="entry.date"></span></span>
           </h3>
           <p class="question" x-text="entry.question"></p>
@@ -73,18 +96,58 @@
   <script>
     function entriesApp() {
       return {
+        locale: 'es',
+        messages: {},
         entries: [],
         loading: true,
         saving: false,
         error: '',
         form: { day: 1, question: '', content: '' },
 
+        async init() {
+          const stored = localStorage.getItem('brujula-locale');
+          const auto = navigator.language?.toLowerCase().startsWith('en') ? 'en' : 'es';
+          this.locale = stored || auto;
+          document.documentElement.lang = this.locale;
+          await this.loadMessages();
+          await this.load();
+        },
+
+        t(key, params = {}) {
+          const value = key.split('.').reduce((acc, k) => acc?.[k], this.messages);
+          const template = typeof value === 'string' ? value : key;
+          return Object.entries(params).reduce(
+            (s, [k, v]) => s.replaceAll(`{${k}}`, String(v)),
+            template
+          );
+        },
+
+        async setLocale(next) {
+          if (next === this.locale) return;
+          this.locale = next;
+          localStorage.setItem('brujula-locale', next);
+          document.documentElement.lang = next;
+          await this.loadMessages();
+        },
+
+        async loadMessages() {
+          try {
+            const res = await fetch(`/api/messages?locale=${encodeURIComponent(this.locale)}`);
+            if (!res.ok) throw new Error('messages fetch failed');
+            const payload = await res.json();
+            this.messages = payload.messages ?? {};
+          } catch (err) {
+            // Mensajes vacíos: t() devuelve la clave como fallback visible.
+            this.messages = {};
+          }
+        },
+
         async load() {
           this.loading = true;
           this.error = '';
           try {
             const res = await fetch('/api/entries');
-            if (!res.ok) throw new Error('No se pudieron cargar las entradas.');
+            if (!res.ok) throw new Error(this.t('errors.load'));
             this.entries = await res.json();
           } catch (err) {
             this.error = err.message;
@@ -108,7 +171,7 @@
             });
             if (!res.ok) {
               const payload = await res.json().catch(() => ({}));
-              throw new Error(payload.error || 'No se pudo guardar la entrada.');
+              throw new Error(payload.error || this.t('errors.save'));
             }
             this.form = { day: this.form.day, question: '', content: '' };
             await this.load();

@@ -5,10 +5,12 @@ import { createApp } from './app.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = join(__dirname, '..', 'data');
+const ROOT = join(__dirname, '..');
+const DATA_DIR = join(ROOT, 'data');
+const MESSAGES_DIR = join(ROOT, 'messages');
 
-const app = createApp({ dataDir: DATA_DIR });
-app.use(express.static(join(__dirname, '..', 'web')));
+const app = createApp({ dataDir: DATA_DIR, messagesDir: MESSAGES_DIR });
+app.use(express.static(join(ROOT, 'web')));
 
 app.listen(PORT, () => {
   console.log(`Brújula escuchando en http://localhost:${PORT}`);

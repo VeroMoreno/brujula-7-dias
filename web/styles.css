@@ -13,6 +13,10 @@
   box-sizing: border-box;
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
 html,
 body {
   margin: 0;
@@ -32,6 +36,42 @@ main {
 
 header {
   margin-bottom: 2.5rem;
+}
+
+.header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.locale-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.locale-switcher button {
+  font: inherit;
+  font-weight: 500;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--muted);
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: color 0.15s ease;
+}
+
+.locale-switcher button:hover {
+  color: var(--fg);
+}
+
+.locale-switcher button.active {
+  color: var(--fg);
 }
 
 h1 {

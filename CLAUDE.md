@@ -73,7 +73,8 @@ El proyecto se trabaja en **mini-sesiones de ~30 min**, ~5h/semana variables, pl
 - ✅ **1.4** — Endpoint `POST /api/entries`. App factory `createApp({ dataDir })` en `server/app.js`, router en `server/routes/entries.js`, tests de integración con `node --test` + `fetch` (puerto efímero, `dataDir` temporal).
 - ✅ **1.5** — Endpoint `GET /api/entries`. Array directo, ordenado por día asc, `[]` cuando no hay entries. Mismo router/factory; tests con `beforeEach` que limpia el `dataDir` para aislar los casos.
 - ✅ **1.6** — Render mínimo en frontend. `web/index.html` + `web/styles.css` con Alpine.js (CDN, sin build). Form para crear/sobrescribir entradas + listado en una sola columna; aviso de sobrescritura cuando el día ya tiene entrada. Copys en español. Sin tests automáticos del frontend — la UI es delgada sobre endpoints ya testeados.
-- ⏭️ **1.7** — Por decidir. Candidatos: catálogo mínimo de preguntas guiadas (1 por día), o edición/borrado desde la lista, o integración Ollama para resumen del día 7.
+- ✅ **1.7a** — Arquitectura i18n + UI bilingüe (es/en). Helper casero en `server/lib/i18n.js` (sin librerías externas), endpoint `GET /api/messages?locale=X`, archivos `messages/es.json` y `messages/en.json`, selector visible en el header, persistencia en `localStorage` y detección via `Accept-Language` / `navigator.language`.
+- ⏭️ **1.7b** — Catálogo bilingüe de 7 preguntas guiadas que pre-rellenan el form al cambiar de día.
 - (Plan completo de 5 semanas detallado en el plan original, se irá actualizando aquí.)
 
 🚦 **Checkpoint formal: fin de semana 3.** Decidir seguir / pausar / pivotar **sin culpa**.

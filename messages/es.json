@@ -1,0 +1,35 @@
+{
+  "app": {
+    "lede": "Una pregunta al día. Tus respuestas se guardan en tu máquina."
+  },
+  "locale": {
+    "label": "Idioma",
+    "es": "ES",
+    "en": "EN"
+  },
+  "form": {
+    "title": "Guardar reflexión",
+    "day": "Día",
+    "question": "Pregunta del día",
+    "content": "Tu respuesta",
+    "submit": "Guardar",
+    "saving": "Guardando…",
+    "overwrite": "Ya hay una entrada para el día {day} — la sobrescribirás.",
+    "placeholder": {
+      "question": "¿Qué transición estás atravesando?",
+      "content": "Escribe sin filtrar. Esto se queda en tu disco."
+    }
+  },
+  "list": {
+    "title": "Reflexiones guardadas",
+    "empty": "Aún no has guardado ninguna entrada.",
+    "loading": "Cargando…"
+  },
+  "entry": {
+    "dayLabel": "Día"
+  },
+  "errors": {
+    "load": "No se pudieron cargar las entradas.",
+    "save": "No se pudo guardar la entrada."
+  }
+}
