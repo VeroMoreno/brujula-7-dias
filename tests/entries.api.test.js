@@ -1,0 +1,84 @@
+import { describe, it, before, after } from 'node:test';
+import assert from 'node:assert/strict';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { createApp } from '../server/app.js';
+
+describe('POST /api/entries', () => {
+  let server;
+  let baseUrl;
+  let dataDir;
+
+  before(async () => {
+    dataDir = await mkdtemp(join(tmpdir(), 'brujula-api-'));
+    const app = createApp({ dataDir });
+    await new Promise((resolve) => {
+      server = app.listen(0, resolve);
+    });
+    const { port } = server.address();
+    baseUrl = `http://127.0.0.1:${port}`;
+  });
+
+  after(async () => {
+    await new Promise((resolve) => server.close(resolve));
+    await rm(dataDir, { recursive: true, force: true });
+  });
+
+  async function post(body, { raw = false } = {}) {
+    return fetch(`${baseUrl}/api/entries`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: raw ? body : JSON.stringify(body),
+    });
+  }
+
+  it('persists the entry and returns 201 with the stored record', async () => {
+    const res = await post({
+      day: 1,
+      question: '¿Qué transición estás atravesando?',
+      content: 'Cambio de carrera tras una baja larga.',
+    });
+
+    assert.equal(res.status, 201);
+    const entry = await res.json();
+    assert.equal(entry.version, 1);
+    assert.equal(entry.day, 1);
+    assert.equal(entry.question, '¿Qué transición estás atravesando?');
+    assert.equal(entry.content, 'Cambio de carrera tras una baja larga.');
+    assert.match(entry.date, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(entry.created);
+    assert.ok(entry.updated);
+  });
+
+  it('rejects a day outside 1-7 with 400 and a clear message', async () => {
+    const res = await post({ day: 8, question: 'q', content: 'x' });
+
+    assert.equal(res.status, 400);
+    assert.deepEqual(await res.json(), { error: 'day must be 1-7' });
+  });
+
+  it('rejects empty content with 400 and a clear message', async () => {
+    const res = await post({ day: 2, question: 'q', content: '   ' });
+
+    assert.equal(res.status, 400);
+    assert.deepEqual(await res.json(), { error: 'content is required' });
+  });
+
+  it('rejects a missing body with 400 (day is reported as missing)', async () => {
+    const res = await fetch(`${baseUrl}/api/entries`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+    });
+
+    assert.equal(res.status, 400);
+    assert.deepEqual(await res.json(), { error: 'day must be 1-7' });
+  });
+
+  it('rejects malformed JSON with 400 and a JSON error payload', async () => {
+    const res = await post('{not json', { raw: true });
+
+    assert.equal(res.status, 400);
+    assert.deepEqual(await res.json(), { error: 'invalid JSON body' });
+  });
+});
