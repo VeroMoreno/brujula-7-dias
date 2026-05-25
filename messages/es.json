@@ -7,16 +7,16 @@
     "es": "ES",
     "en": "EN"
   },
+  "journey": {
+    "todayLabel": "Hoy es el día {day}",
+    "completeTitle": "Has terminado los 7 días",
+    "completeNote": "El resumen reflexivo llega en una próxima versión."
+  },
   "form": {
-    "title": "Guardar reflexión",
-    "day": "Día",
-    "question": "Pregunta del día",
     "content": "Tu respuesta",
     "submit": "Guardar",
     "saving": "Guardando…",
-    "overwrite": "Ya hay una entrada para el día {day} — la sobrescribirás.",
     "placeholder": {
-      "question": "¿Qué transición estás atravesando?",
       "content": "Escribe sin filtrar. Esto se queda en tu disco."
     }
   },

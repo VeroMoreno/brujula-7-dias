@@ -1,5 +1,6 @@
 import express from 'express';
 import { createEntriesRouter } from './routes/entries.js';
+import { createJourneyRouter } from './routes/journey.js';
 import { createMessagesRouter } from './routes/messages.js';
 import { createQuestionsRouter } from './routes/questions.js';
 
@@ -7,7 +8,10 @@ export function createApp({ dataDir, messagesDir, promptsDir } = {}) {
   const app = express();
 
   app.use(express.json());
-  app.use('/api', createEntriesRouter(dataDir));
+  if (dataDir) {
+    app.use('/api', createEntriesRouter(dataDir));
+    app.use('/api', createJourneyRouter(dataDir));
+  }
   if (messagesDir) {
     app.use('/api', createMessagesRouter(messagesDir));
   }

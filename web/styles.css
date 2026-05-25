@@ -6,7 +6,6 @@
   --border: #e5e5e0;
   --accent: #1f1f1f;
   --error: #b91c1c;
-  --hint: #92651a;
 }
 
 * {
@@ -15,6 +14,18 @@
 
 [x-cloak] {
   display: none !important;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 html,
@@ -96,9 +107,27 @@ h2 {
   border-top: 1px solid var(--border);
 }
 
-section:first-of-type h2 {
+.today-label {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.question-prompt {
+  font-size: 1.35rem;
+  line-height: 1.4;
+  font-weight: 500;
+  margin: 0 0 1.5rem;
   padding-top: 0;
   border-top: 0;
+  letter-spacing: -0.01em;
+}
+
+.journey-complete .muted {
+  margin: 0;
 }
 
 form label {
@@ -131,11 +160,6 @@ form textarea:focus {
   border-color: var(--fg);
 }
 
-form select {
-  width: auto;
-  min-width: 5rem;
-}
-
 form textarea {
   resize: vertical;
   min-height: 7rem;
@@ -157,12 +181,6 @@ button {
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.hint {
-  margin: -0.5rem 0 1rem;
-  color: var(--hint);
-  font-size: 0.85rem;
 }
 
 .error {
@@ -190,6 +208,8 @@ article h3 {
   font-size: 0.95rem;
   font-weight: 600;
   margin: 0 0 0.4rem;
+  padding-top: 0;
+  border-top: 0;
 }
 
 article h3 .muted {

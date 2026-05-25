@@ -7,16 +7,16 @@
     "es": "ES",
     "en": "EN"
   },
+  "journey": {
+    "todayLabel": "Today is day {day}",
+    "completeTitle": "You've completed the 7 days",
+    "completeNote": "The reflective summary arrives in a future version."
+  },
   "form": {
-    "title": "Save reflection",
-    "day": "Day",
-    "question": "Question of the day",
     "content": "Your answer",
     "submit": "Save",
     "saving": "Saving…",
-    "overwrite": "There's already an entry for day {day} — you'll overwrite it.",
     "placeholder": {
-      "question": "What transition are you going through?",
       "content": "Write without filtering. This stays on your disk."
     }
   },

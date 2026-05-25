@@ -31,33 +31,13 @@
       <p class="lede" x-text="t('app.lede')"></p>
     </header>
 
-    <section aria-labelledby="form-title">
-      <h2 id="form-title" x-text="t('form.title')"></h2>
+    <section x-show="!journey.complete" aria-labelledby="today-question">
+      <p class="today-label" x-text="t('journey.todayLabel', { day: journey.day })"></p>
+      <h2 id="today-question" class="question-prompt" x-text="question"></h2>
 
       <form @submit.prevent="submit()">
         <label>
-          <span x-text="t('form.day')"></span>
-          <select x-model.number="form.day">
-            <template x-for="n in 7" :key="n">
-              <option :value="n" x-text="n"></option>
-            </template>
-          </select>
-        </label>
-
-        <p class="hint" x-show="existingForDay(form.day)" x-text="t('form.overwrite', { day: form.day })"></p>
-
-        <label>
-          <span x-text="t('form.question')"></span>
-          <input
-            type="text"
-            x-model="form.question"
-            :placeholder="t('form.placeholder.question')"
-            required
-            maxlength="200">
-        </label>
-
-        <label>
-          <span x-text="t('form.content')"></span>
+          <span class="visually-hidden" x-text="t('form.content')"></span>
           <textarea
             x-model="form.content"
             :placeholder="t('form.placeholder.content')"
@@ -71,6 +51,11 @@
 
         <p class="error" role="alert" x-show="error" x-text="error"></p>
       </form>
+    </section>
+
+    <section x-show="journey.complete" aria-labelledby="complete-title" class="journey-complete">
+      <h2 id="complete-title" class="question-prompt" x-text="t('journey.completeTitle')"></h2>
+      <p class="muted" x-text="t('journey.completeNote')"></p>
     </section>
 
     <section aria-labelledby="list-title">
@@ -98,11 +83,13 @@
       return {
         locale: 'es',
         messages: {},
+        journey: { day: 1, startedAt: null, complete: false },
+        question: '',
         entries: [],
         loading: true,
         saving: false,
         error: '',
-        form: { day: 1, question: '', content: '' },
+        form: { content: '' },
 
         async init() {
           const stored = localStorage.getItem('brujula-locale');
@@ -110,25 +97,10 @@
           this.locale = stored || auto;
           document.documentElement.lang = this.locale;
           await this.loadMessages();
-          await this.load();
+          await this.loadJourney();
           await this.loadQuestion();
-          this.$watch('form.day', () => this.loadQuestion());
+          await this.load();
           this.$watch('locale', () => this.loadQuestion());
-        },
-
-        async loadQuestion() {
-          try {
-            const res = await fetch(
-              `/api/questions/${this.form.day}?locale=${encodeURIComponent(this.locale)}`
-            );
-            if (!res.ok) return;
-            const payload = await res.json();
-            if (typeof payload.question === 'string') {
-              this.form.question = payload.question;
-            }
-          } catch {
-            // Mantén el valor actual del input si la red falla.
-          }
         },
 
         t(key, params = {}) {
@@ -154,9 +126,33 @@
             if (!res.ok) throw new Error('messages fetch failed');
             const payload = await res.json();
             this.messages = payload.messages ?? {};
-          } catch (err) {
-            // Mensajes vacíos: t() devuelve la clave como fallback visible.
+          } catch {
             this.messages = {};
+          }
+        },
+
+        async loadJourney() {
+          try {
+            const res = await fetch('/api/journey');
+            if (!res.ok) throw new Error('journey fetch failed');
+            this.journey = await res.json();
+          } catch {
+            this.journey = { day: 1, startedAt: null, complete: false };
+          }
+        },
+
+        async loadQuestion() {
+          try {
+            const res = await fetch(
+              `/api/questions/${this.journey.day}?locale=${encodeURIComponent(this.locale)}`
+            );
+            if (!res.ok) return;
+            const payload = await res.json();
+            if (typeof payload.question === 'string') {
+              this.question = payload.question;
+            }
+          } catch {
+            // mantiene la pregunta actual
           }
         },
 
@@ -174,10 +170,6 @@
           }
         },
 
-        existingForDay(day) {
-          return this.entries.some((e) => e.day === day);
-        },
-
         async submit() {
           this.saving = true;
           this.error = '';
@@ -185,13 +177,18 @@
             const res = await fetch('/api/entries', {
               method: 'POST',
               headers: { 'content-type': 'application/json' },
-              body: JSON.stringify(this.form),
+              body: JSON.stringify({
+                day: this.journey.day,
+                question: this.question,
+                content: this.form.content,
+              }),
             });
             if (!res.ok) {
               const payload = await res.json().catch(() => ({}));
               throw new Error(payload.error || this.t('errors.save'));
             }
-            this.form = { day: this.form.day, question: '', content: '' };
+            this.form.content = '';
+            await this.loadJourney();
             await this.loadQuestion();
             await this.load();
           } catch (err) {
