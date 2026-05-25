@@ -111,6 +111,24 @@
           document.documentElement.lang = this.locale;
           await this.loadMessages();
           await this.load();
+          await this.loadQuestion();
+          this.$watch('form.day', () => this.loadQuestion());
+          this.$watch('locale', () => this.loadQuestion());
+        },
+
+        async loadQuestion() {
+          try {
+            const res = await fetch(
+              `/api/questions/${this.form.day}?locale=${encodeURIComponent(this.locale)}`
+            );
+            if (!res.ok) return;
+            const payload = await res.json();
+            if (typeof payload.question === 'string') {
+              this.form.question = payload.question;
+            }
+          } catch {
+            // Mantén el valor actual del input si la red falla.
+          }
         },
 
         t(key, params = {}) {
@@ -174,6 +192,7 @@
               throw new Error(payload.error || this.t('errors.save'));
             }
             this.form = { day: this.form.day, question: '', content: '' };
+            await this.loadQuestion();
             await this.load();
           } catch (err) {
             this.error = err.message;

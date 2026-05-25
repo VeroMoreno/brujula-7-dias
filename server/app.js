@@ -1,14 +1,18 @@
 import express from 'express';
 import { createEntriesRouter } from './routes/entries.js';
 import { createMessagesRouter } from './routes/messages.js';
+import { createQuestionsRouter } from './routes/questions.js';
 
-export function createApp({ dataDir, messagesDir } = {}) {
+export function createApp({ dataDir, messagesDir, promptsDir } = {}) {
   const app = express();
 
   app.use(express.json());
   app.use('/api', createEntriesRouter(dataDir));
   if (messagesDir) {
     app.use('/api', createMessagesRouter(messagesDir));
+  }
+  if (promptsDir) {
+    app.use('/api', createQuestionsRouter(promptsDir));
   }
 
   // express.json() emits SyntaxError on malformed input; translate it
