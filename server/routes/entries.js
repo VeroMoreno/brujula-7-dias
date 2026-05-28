@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { listEntries, writeEntry } from '../lib/markdown.js';
+import { deleteEntry, listEntries, writeEntry } from '../lib/markdown.js';
 
 const VALIDATION_MESSAGES = new Set(['day must be 1-7', 'content is required']);
 
@@ -22,6 +22,21 @@ export function createEntriesRouter(dataDir) {
     } catch (err) {
       if (VALIDATION_MESSAGES.has(err.message)) {
         res.status(400).json({ error: err.message });
+      } else {
+        next(err);
+      }
+    }
+  });
+
+  router.delete('/entries/:day', async (req, res, next) => {
+    try {
+      await deleteEntry(dataDir, Number(req.params.day));
+      res.status(204).end();
+    } catch (err) {
+      if (err.message === 'day must be 1-7') {
+        res.status(400).json({ error: err.message });
+      } else if (err.message === 'entry not found') {
+        res.status(404).json({ error: err.message });
       } else {
         next(err);
       }

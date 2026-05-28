@@ -76,7 +76,8 @@ El proyecto se trabaja en **mini-sesiones de ~30 min**, ~5h/semana variables, pl
 - ✅ **1.7a** — Arquitectura i18n + UI bilingüe (es/en). Helper casero en `server/lib/i18n.js` (sin librerías externas), endpoint `GET /api/messages?locale=X`, archivos `messages/es.json` y `messages/en.json`, selector visible en el header, persistencia en `localStorage` y detección via `Accept-Language` / `navigator.language`.
 - ✅ **1.7b** — Catálogo bilingüe de 7 preguntas guiadas (`server/prompts/questions.{es,en}.md`, parser propio en `server/lib/questions.js`, endpoint `GET /api/questions/:day?locale=X`).
 - ✅ **1.7c** — Día por calendario + pregunta como display. El día actual se calcula desde el `created` de `data/day-1.md` (sin selector, sin elegir). La pregunta es título display, no input. Estado de fin cuando elapsed ≥ 7 días. Variable `BRUJULA_TODAY=YYYY-MM-DD` para simular fechas en dev. Nuevo módulo `server/lib/journey.js` + endpoint `GET /api/journey`.
-- ⏭️ **1.8** — Por decidir. Candidatos: integración Ollama para resumen del día 7, edición/borrado desde la lista, o mostrar la pregunta junto a la entrada en el listado histórico.
+- ✅ **1.8a** — Borrar entradas. Helper `deleteEntry(dataDir, day)` en `markdown.js`, endpoint `DELETE /api/entries/:day` (204 ok, 404 si no existe, 400 si `day` inválido), botón "Borrar" por entrada con `confirm()`, nuevas claves i18n `entry.delete` / `entry.deleteConfirm` / `errors.delete`. Tras borrar se recarga `journey` (clave: borrar el día 1 reinicia la cuenta).
+- ⏭️ **1.8b** — Editar entradas desde la lista. El backend ya sobrescribe en `POST` (writeEntry preserva `created`), falta el flujo UI: cargar una entrada en el formulario, mostrar qué día se edita, "Cancelar edición".
 - (Plan completo de 5 semanas detallado en el plan original, se irá actualizando aquí.)
 
 🚦 **Checkpoint formal: fin de semana 3.** Decidir seguir / pausar / pivotar **sin culpa**.

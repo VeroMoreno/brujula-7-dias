@@ -26,10 +26,13 @@
     "loading": "Cargando…"
   },
   "entry": {
-    "dayLabel": "Día"
+    "dayLabel": "Día",
+    "delete": "Borrar",
+    "deleteConfirm": "¿Borrar la entrada del día {day}? Esta acción no se puede deshacer."
   },
   "errors": {
     "load": "No se pudieron cargar las entradas.",
-    "save": "No se pudo guardar la entrada."
+    "save": "No se pudo guardar la entrada.",
+    "delete": "No se pudo borrar la entrada."
   }
 }

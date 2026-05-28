@@ -26,10 +26,13 @@
     "loading": "Loading…"
   },
   "entry": {
-    "dayLabel": "Day"
+    "dayLabel": "Day",
+    "delete": "Delete",
+    "deleteConfirm": "Delete the entry for day {day}? This can't be undone."
   },
   "errors": {
     "load": "Couldn't load entries.",
-    "save": "Couldn't save the entry."
+    "save": "Couldn't save the entry.",
+    "delete": "Couldn't delete the entry."
   }
 }

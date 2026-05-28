@@ -131,3 +131,61 @@ describe('GET /api/entries', () => {
     assert.equal(entries[0].version, 1);
   });
 });
+
+describe('DELETE /api/entries/:day', () => {
+  let server;
+  let baseUrl;
+  let dataDir;
+
+  before(async () => {
+    dataDir = await mkdtemp(join(tmpdir(), 'brujula-api-delete-'));
+    const app = createApp({ dataDir });
+    await new Promise((resolve) => {
+      server = app.listen(0, resolve);
+    });
+    const { port } = server.address();
+    baseUrl = `http://127.0.0.1:${port}`;
+  });
+
+  after(async () => {
+    await new Promise((resolve) => server.close(resolve));
+    await rm(dataDir, { recursive: true, force: true });
+  });
+
+  beforeEach(async () => {
+    await rm(dataDir, { recursive: true, force: true });
+  });
+
+  it('removes the entry and returns 204 with no body', async () => {
+    await writeEntry(dataDir, { day: 2, question: 'q', content: 'c' });
+
+    const res = await fetch(`${baseUrl}/api/entries/2`, { method: 'DELETE' });
+
+    assert.equal(res.status, 204);
+    assert.equal(await res.text(), '');
+
+    const list = await fetch(`${baseUrl}/api/entries`);
+    assert.deepEqual(await list.json(), []);
+  });
+
+  it('returns 404 when the entry does not exist', async () => {
+    const res = await fetch(`${baseUrl}/api/entries/5`, { method: 'DELETE' });
+
+    assert.equal(res.status, 404);
+    assert.deepEqual(await res.json(), { error: 'entry not found' });
+  });
+
+  it('returns 400 when the day is outside 1-7', async () => {
+    const res = await fetch(`${baseUrl}/api/entries/8`, { method: 'DELETE' });
+
+    assert.equal(res.status, 400);
+    assert.deepEqual(await res.json(), { error: 'day must be 1-7' });
+  });
+
+  it('returns 400 when the day is not a number', async () => {
+    const res = await fetch(`${baseUrl}/api/entries/abc`, { method: 'DELETE' });
+
+    assert.equal(res.status, 400);
+    assert.deepEqual(await res.json(), { error: 'day must be 1-7' });
+  });
+});

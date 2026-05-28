@@ -68,6 +68,18 @@ export async function listEntries(dataDir) {
   return entries;
 }
 
+export async function deleteEntry(dataDir, day) {
+  assertDay(day);
+  try {
+    await fs.unlink(entryPath(dataDir, day));
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      throw new Error('entry not found');
+    }
+    throw err;
+  }
+}
+
 export async function writeEntry(dataDir, { day, question, content }) {
   assertDay(day);
   if (!content || !content.trim()) {

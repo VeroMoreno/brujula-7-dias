@@ -73,6 +73,13 @@
           </h3>
           <p class="question" x-text="entry.question"></p>
           <p class="content" x-text="entry.content"></p>
+          <div class="entry-actions">
+            <button
+              type="button"
+              class="link-danger"
+              @click="remove(entry.day)"
+              x-text="t('entry.delete')"></button>
+          </div>
         </article>
       </template>
     </section>
@@ -167,6 +174,23 @@
             this.error = err.message;
           } finally {
             this.loading = false;
+          }
+        },
+
+        async remove(day) {
+          if (!confirm(this.t('entry.deleteConfirm', { day }))) return;
+          this.error = '';
+          try {
+            const res = await fetch(`/api/entries/${day}`, { method: 'DELETE' });
+            if (!res.ok) {
+              const payload = await res.json().catch(() => ({}));
+              throw new Error(payload.error || this.t('errors.delete'));
+            }
+            await this.loadJourney();
+            await this.loadQuestion();
+            await this.load();
+          } catch (err) {
+            this.error = err.message;
           }
         },
 
