@@ -52,6 +52,24 @@ brujula-7-dias/
 └── CLAUDE.md       ← este archivo
 ```
 
+## Setup en máquina nueva
+
+Para clonar y ponerse a trabajar (sobre todo al saltar de Windows a Mac o viceversa):
+
+1. **Pre-requisitos**: Node 22+ (LTS). Comprobar con `node -v`.
+2. **Clonar**: `git clone https://github.com/VeroMoreno/brujula-7-dias.git && cd brujula-7-dias`.
+3. **Identidad git LOCAL** (no `--global`) — paso obligatorio:
+   ```sh
+   git config user.email "veronica.moreno.work@gmail.com"
+   git config user.name  "Veronica Moreno TVP"
+   ```
+   La misma máquina se usa para repos personales y de empresa. El `user.email` global suele apuntar al de empresa; en este repo personal hay que usar el personal para no mezclar identidades en el historial. Todos los commits previos están bajo el personal.
+4. **Mac sólo**: `git config --global core.autocrlf input` (una vez por máquina, no por repo).
+5. **Deps**: `npm install`.
+6. **Correr**: `npm start` → http://localhost:3000.
+7. **Tests**: `node --test`.
+8. **Simular fechas** (útil para Ollama en 1.x+): `BRUJULA_TODAY=2026-06-04 npm start` salta la cuenta de días al 4 de junio.
+
 ## Cómo se construye
 
 El proyecto se trabaja en **mini-sesiones de ~30 min**, ~5h/semana variables, plan de **5 semanas**. Cada mini-sesión deja el repo en estado coherente y termina con un commit.
@@ -61,7 +79,7 @@ El proyecto se trabaja en **mini-sesiones de ~30 min**, ~5h/semana variables, pl
 - **Lenguaje**: código, nombres y commits en inglés; copys de UI en español.
 - **Commits**: formato `tipo: descripción corta` (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`).
 - **Branch principal**: `main`. Sin GitFlow ni ramas de feature por ahora — desarrollo trunk-based, mini-sesiones tan cortas que no lo necesitan.
-- **Gestión git**: GitHub Desktop (autenticación ya configurada en Windows). En Mac, configurar `git config --global core.autocrlf input`.
+- **Gestión git**: GitHub Desktop (autenticación ya configurada en Windows). Para el setup inicial en una máquina nueva, ver la sección **Setup** arriba.
 - **Estilo**: 2 espacios de indentación (decidido en sesión 1.2). ES Modules (`type: module`).
 - **Tests**: pequeños y rápidos, con `node --test`. Sesiones cortas → tests que corren en <1s.
 
