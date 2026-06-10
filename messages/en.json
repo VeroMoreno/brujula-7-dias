@@ -11,7 +11,14 @@
     "todayLabel": "Today is day {day}",
     "editingLabel": "Editing day {day}",
     "completeTitle": "You've completed the 7 days",
-    "completeNote": "The reflective summary arrives in a future version."
+    "completeNote": "A mirror of your seven days: patterns, not advice."
+  },
+  "summary": {
+    "generate": "Generate my summary",
+    "generating": "Generating… (may take a moment)",
+    "regenerate": "Regenerate",
+    "meta": "Generated locally with {model}.",
+    "error": "Couldn't generate the summary. Is Ollama running?"
   },
   "form": {
     "content": "Your answer",

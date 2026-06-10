@@ -130,6 +130,26 @@ h2 {
   margin: 0;
 }
 
+.summary-cta {
+  margin-top: 1.5rem;
+}
+
+.summary {
+  margin-top: 1.5rem;
+}
+
+.summary-content {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.summary-meta {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.8rem;
+}
+
 form label {
   display: block;
   margin-bottom: 1rem;

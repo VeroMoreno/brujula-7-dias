@@ -11,7 +11,14 @@
     "todayLabel": "Hoy es el día {day}",
     "editingLabel": "Editando el día {day}",
     "completeTitle": "Has terminado los 7 días",
-    "completeNote": "El resumen reflexivo llega en una próxima versión."
+    "completeNote": "Un espejo de tus siete días: patrones, no consejos."
+  },
+  "summary": {
+    "generate": "Generar mi resumen",
+    "generating": "Generando… (puede tardar)",
+    "regenerate": "Regenerar",
+    "meta": "Generado en local con {model}.",
+    "error": "No se pudo generar el resumen. ¿Tienes Ollama en marcha?"
   },
   "form": {
     "content": "Tu respuesta",

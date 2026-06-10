@@ -67,6 +67,29 @@
     <section x-show="journey.complete && editing === null" aria-labelledby="complete-title" class="journey-complete">
       <h2 id="complete-title" class="question-prompt" x-text="t('journey.completeTitle')"></h2>
       <p class="muted" x-text="t('journey.completeNote')"></p>
+
+      <template x-if="summary">
+        <div class="summary" x-transition.opacity.duration.250ms>
+          <p class="summary-content" x-text="summary.content"></p>
+          <p class="muted summary-meta" x-text="t('summary.meta', { model: summary.model })"></p>
+          <button
+            type="button"
+            class="link-action"
+            @click="generateSummary()"
+            :disabled="generating"
+            x-text="generating ? t('summary.generating') : t('summary.regenerate')"></button>
+        </div>
+      </template>
+
+      <template x-if="!summary">
+        <div class="summary-cta">
+          <button type="button" @click="generateSummary()" :disabled="generating">
+            <span x-text="generating ? t('summary.generating') : t('summary.generate')"></span>
+          </button>
+        </div>
+      </template>
+
+      <p class="error" role="alert" x-show="summaryError" x-text="summaryError"></p>
     </section>
 
     <section aria-labelledby="list-title">
@@ -114,6 +137,9 @@
         error: '',
         editing: null,
         editQuestion: '',
+        summary: null,
+        generating: false,
+        summaryError: '',
         form: { content: '' },
 
         async init() {
@@ -125,6 +151,7 @@
           await this.loadJourney();
           await this.loadQuestion();
           await this.load();
+          if (this.journey.complete) await this.loadSummary();
           this.$watch('locale', () => this.loadQuestion());
         },
 
@@ -192,6 +219,38 @@
             this.error = err.message;
           } finally {
             this.loading = false;
+          }
+        },
+
+        async loadSummary() {
+          try {
+            const res = await fetch('/api/summary');
+            if (res.status === 404) {
+              this.summary = null;
+              return;
+            }
+            if (!res.ok) throw new Error('summary fetch failed');
+            this.summary = await res.json();
+          } catch {
+            this.summary = null;
+          }
+        },
+
+        async generateSummary() {
+          this.generating = true;
+          this.summaryError = '';
+          try {
+            const res = await fetch('/api/summary', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ locale: this.locale }),
+            });
+            if (!res.ok) throw new Error(this.t('summary.error'));
+            this.summary = await res.json();
+          } catch (err) {
+            this.summaryError = err.message;
+          } finally {
+            this.generating = false;
           }
         },
 
