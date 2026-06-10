@@ -31,7 +31,9 @@
       <p class="lede" x-text="t('app.lede')"></p>
     </header>
 
-    <section x-show="!journey.complete || editing !== null" aria-labelledby="today-question">
+    <section x-show="!journey.complete || editing !== null"
+             x-transition.opacity.duration.250ms
+             aria-labelledby="today-question">
       <p class="today-label"
          x-text="editing !== null ? t('journey.editingLabel', { day: editing }) : t('journey.todayLabel', { day: journey.day })"></p>
       <h2 id="today-question" class="question-prompt" x-text="editing !== null ? editQuestion : question"></h2>
@@ -62,7 +64,7 @@
       </form>
     </section>
 
-    <section x-show="journey.complete" aria-labelledby="complete-title" class="journey-complete">
+    <section x-show="journey.complete && editing === null" aria-labelledby="complete-title" class="journey-complete">
       <h2 id="complete-title" class="question-prompt" x-text="t('journey.completeTitle')"></h2>
       <p class="muted" x-text="t('journey.completeNote')"></p>
     </section>
