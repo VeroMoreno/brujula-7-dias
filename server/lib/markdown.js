@@ -10,6 +10,10 @@ function entryPath(dataDir, day) {
   return join(dataDir, `day-${day}.md`);
 }
 
+function summaryPath(dataDir) {
+  return join(dataDir, 'summary.md');
+}
+
 function assertDay(day) {
   if (!Number.isInteger(day) || day < MIN_DAY || day > MAX_DAY) {
     throw new Error('day must be 1-7');
@@ -78,6 +82,45 @@ export async function deleteEntry(dataDir, day) {
     }
     throw err;
   }
+}
+
+export async function readSummary(dataDir) {
+  let raw;
+  try {
+    raw = await fs.readFile(summaryPath(dataDir), 'utf8');
+  } catch (err) {
+    if (err.code === 'ENOENT') return null;
+    throw err;
+  }
+  const { data, content } = matter(raw);
+  return {
+    version: data.version,
+    created: toTimestamp(data.created),
+    updated: toTimestamp(data.updated),
+    model: data.model,
+    locale: data.locale,
+    content: content.trim(),
+  };
+}
+
+export async function writeSummary(dataDir, { content, model, locale }) {
+  if (!content || !content.trim()) {
+    throw new Error('content is required');
+  }
+  await fs.mkdir(dataDir, { recursive: true });
+  const now = new Date().toISOString();
+  const existing = await readSummary(dataDir);
+  const created = existing ? existing.created : now;
+  const frontmatter = {
+    version: SCHEMA_VERSION,
+    created,
+    updated: now,
+    model,
+    locale,
+  };
+  const file = matter.stringify(`${content.trim()}\n`, frontmatter);
+  await fs.writeFile(summaryPath(dataDir), file, 'utf8');
+  return readSummary(dataDir);
 }
 
 export async function writeEntry(dataDir, { day, question, content }) {
