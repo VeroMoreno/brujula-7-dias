@@ -102,6 +102,8 @@ El proyecto se trabaja en **mini-sesiones de ~30 min**, ~5h/semana variables, pl
 - ✅ **IA-4** — UI del día 7. Botón "Generar mi resumen" en `journey-complete` → estado "Generando…" → render del resumen (+ línea meta "generado en local con {model}") → "Regenerar". Carga el resumen persistido en `init` si la jornada está completa. Error amable si Ollama no responde. Claves i18n `summary.*` (es/en) y `completeNote` reescrito. Frontend delgado, sin tests automáticos. **Verificación end-to-end (navegador + Ollama vivo) pendiente de Vero.**
 - ⏭️ **IA-5** (post-v1) — Backend Claude opcional con API key del usuario.
 
+**Pendiente menor (decisión aplazada)**: la pregunta de cada entrada se muestra "dato fiel" (la guardada en su `.md`, en el idioma en que se escribió), así que la lista mezcla idiomas si cambias de locale. Alternativa pendiente de valorar: mostrarla desde el catálogo en el idioma actual (coherente con 1.7c "la pregunta es display, no input"), cargando las 7 preguntas en el cliente.
+
 **Decisiones de la fase IA** (sesión 2026-06-10): (1) el resumen se guarda como `.md` propiedad del usuario (local-first); (2) v1 es **solo Ollama**, pero detrás de una interfaz `generateSummary()` para que Claude entre luego sin refactor; (3) generación con **botón explícito** ("Generar resumen"), no automática — acto deliberado acorde al producto, además de evitar latencia sorpresa del modelo local.
 
 - (Plan completo de 5 semanas detallado en el plan original, se irá actualizando aquí.)
