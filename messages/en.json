@@ -9,12 +9,15 @@
   },
   "journey": {
     "todayLabel": "Today is day {day}",
+    "editingLabel": "Editing day {day}",
     "completeTitle": "You've completed the 7 days",
     "completeNote": "The reflective summary arrives in a future version."
   },
   "form": {
     "content": "Your answer",
     "submit": "Save",
+    "update": "Save changes",
+    "cancelEdit": "Cancel editing",
     "saving": "Saving…",
     "placeholder": {
       "content": "Write without filtering. This stays on your disk."
@@ -27,6 +30,7 @@
   },
   "entry": {
     "dayLabel": "Day",
+    "edit": "Edit",
     "delete": "Delete",
     "deleteConfirm": "Delete the entry for day {day}? This can't be undone."
   },

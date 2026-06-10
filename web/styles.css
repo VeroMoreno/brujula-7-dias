@@ -227,19 +227,43 @@ article .content {
   white-space: pre-wrap;
 }
 
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .entry-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   margin-top: 0.6rem;
 }
 
-.link-danger {
+.link-danger,
+.link-action,
+.link-muted {
   background: transparent;
-  color: var(--error);
   padding: 0;
   font-size: 0.85rem;
   font-weight: 500;
   border-radius: 0;
 }
 
-.link-danger:hover {
+.link-danger {
+  color: var(--error);
+}
+
+.link-action {
+  color: var(--fg);
+}
+
+.link-muted {
+  color: var(--muted);
+}
+
+.link-danger:hover,
+.link-action:hover,
+.link-muted:hover {
   text-decoration: underline;
 }

@@ -31,9 +31,10 @@
       <p class="lede" x-text="t('app.lede')"></p>
     </header>
 
-    <section x-show="!journey.complete" aria-labelledby="today-question">
-      <p class="today-label" x-text="t('journey.todayLabel', { day: journey.day })"></p>
-      <h2 id="today-question" class="question-prompt" x-text="question"></h2>
+    <section x-show="!journey.complete || editing !== null" aria-labelledby="today-question">
+      <p class="today-label"
+         x-text="editing !== null ? t('journey.editingLabel', { day: editing }) : t('journey.todayLabel', { day: journey.day })"></p>
+      <h2 id="today-question" class="question-prompt" x-text="editing !== null ? editQuestion : question"></h2>
 
       <form @submit.prevent="submit()">
         <label>
@@ -45,9 +46,17 @@
             rows="6"></textarea>
         </label>
 
-        <button type="submit" :disabled="saving">
-          <span x-text="saving ? t('form.saving') : t('form.submit')"></span>
-        </button>
+        <div class="form-actions">
+          <button type="submit" :disabled="saving">
+            <span x-text="saving ? t('form.saving') : (editing !== null ? t('form.update') : t('form.submit'))"></span>
+          </button>
+          <button
+            type="button"
+            class="link-muted"
+            x-show="editing !== null"
+            @click="cancelEdit()"
+            x-text="t('form.cancelEdit')"></button>
+        </div>
 
         <p class="error" role="alert" x-show="error" x-text="error"></p>
       </form>
@@ -76,6 +85,11 @@
           <div class="entry-actions">
             <button
               type="button"
+              class="link-action"
+              @click="edit(entry)"
+              x-text="t('entry.edit')"></button>
+            <button
+              type="button"
               class="link-danger"
               @click="remove(entry.day)"
               x-text="t('entry.delete')"></button>
@@ -96,6 +110,8 @@
         loading: true,
         saving: false,
         error: '',
+        editing: null,
+        editQuestion: '',
         form: { content: '' },
 
         async init() {
@@ -177,6 +193,21 @@
           }
         },
 
+        edit(entry) {
+          this.editing = entry.day;
+          this.editQuestion = entry.question;
+          this.form.content = entry.content;
+          this.error = '';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+
+        cancelEdit() {
+          this.editing = null;
+          this.editQuestion = '';
+          this.form.content = '';
+          this.error = '';
+        },
+
         async remove(day) {
           if (!confirm(this.t('entry.deleteConfirm', { day }))) return;
           this.error = '';
@@ -202,8 +233,8 @@
               method: 'POST',
               headers: { 'content-type': 'application/json' },
               body: JSON.stringify({
-                day: this.journey.day,
-                question: this.question,
+                day: this.editing !== null ? this.editing : this.journey.day,
+                question: this.editing !== null ? this.editQuestion : this.question,
                 content: this.form.content,
               }),
             });
@@ -212,6 +243,8 @@
               throw new Error(payload.error || this.t('errors.save'));
             }
             this.form.content = '';
+            this.editing = null;
+            this.editQuestion = '';
             await this.loadJourney();
             await this.loadQuestion();
             await this.load();

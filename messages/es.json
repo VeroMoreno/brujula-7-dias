@@ -9,12 +9,15 @@
   },
   "journey": {
     "todayLabel": "Hoy es el día {day}",
+    "editingLabel": "Editando el día {day}",
     "completeTitle": "Has terminado los 7 días",
     "completeNote": "El resumen reflexivo llega en una próxima versión."
   },
   "form": {
     "content": "Tu respuesta",
     "submit": "Guardar",
+    "update": "Guardar cambios",
+    "cancelEdit": "Cancelar edición",
     "saving": "Guardando…",
     "placeholder": {
       "content": "Escribe sin filtrar. Esto se queda en tu disco."
@@ -27,6 +30,7 @@
   },
   "entry": {
     "dayLabel": "Día",
+    "edit": "Editar",
     "delete": "Borrar",
     "deleteConfirm": "¿Borrar la entrada del día {day}? Esta acción no se puede deshacer."
   },
