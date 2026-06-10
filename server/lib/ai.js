@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { isSupportedLocale } from './i18n.js';
 
-const DEFAULT_MODEL = 'llama3.2:3b';
+export const DEFAULT_MODEL = 'llama3.2:3b';
 const DEFAULT_BASE_URL = 'http://localhost:11434';
 const ENTRIES_PLACEHOLDER = '{{entries}}';
 

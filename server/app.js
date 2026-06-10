@@ -3,8 +3,9 @@ import { createEntriesRouter } from './routes/entries.js';
 import { createJourneyRouter } from './routes/journey.js';
 import { createMessagesRouter } from './routes/messages.js';
 import { createQuestionsRouter } from './routes/questions.js';
+import { createSummaryRouter } from './routes/summary.js';
 
-export function createApp({ dataDir, messagesDir, promptsDir } = {}) {
+export function createApp({ dataDir, messagesDir, promptsDir, summaryGenerate } = {}) {
   const app = express();
 
   app.use(express.json());
@@ -17,6 +18,9 @@ export function createApp({ dataDir, messagesDir, promptsDir } = {}) {
   }
   if (promptsDir) {
     app.use('/api', createQuestionsRouter(promptsDir));
+  }
+  if (dataDir && promptsDir) {
+    app.use('/api', createSummaryRouter(dataDir, promptsDir, { generate: summaryGenerate }));
   }
 
   // express.json() emits SyntaxError on malformed input; translate it
