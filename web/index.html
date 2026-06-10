@@ -89,7 +89,7 @@
         </div>
       </template>
 
-      <p class="error" role="alert" x-show="summaryError" x-text="summaryError"></p>
+      <p class="error" role="alert" x-show="summaryError" x-text="summaryError ? t(summaryError) : ''"></p>
     </section>
 
     <section aria-labelledby="list-title">
@@ -245,10 +245,13 @@
               headers: { 'content-type': 'application/json' },
               body: JSON.stringify({ locale: this.locale }),
             });
-            if (!res.ok) throw new Error(this.t('summary.error'));
+            if (!res.ok) {
+              this.summaryError = 'summary.error';
+              return;
+            }
             this.summary = await res.json();
-          } catch (err) {
-            this.summaryError = err.message;
+          } catch {
+            this.summaryError = 'summary.error';
           } finally {
             this.generating = false;
           }
